@@ -1,0 +1,45 @@
+import heapq
+
+def prim(n, graph):
+    visited = [False] * n
+    min_edge = [float('inf')] * n
+    min_edge[0] = 0
+    total_weight = 0
+    parent = [-1] * n
+    heap = [(0, 0)]  
+
+    while heap:
+        weight, u = heapq.heappop(heap)
+        if visited[u]:
+            continue
+        visited[u] = True
+        total_weight += weight
+        for v in range(n):
+            if graph[u][v] != 0 and not visited[v] and graph[u][v] < min_edge[v]:
+                min_edge[v] = graph[u][v]
+                parent[v] = u
+                heapq.heappush(heap, (graph[u][v], v))
+
+    if not all(visited):
+        return -1, []
+
+    edges = []
+    for v in range(1, n):
+        u = parent[v]
+        edges.append((u + 1, v + 1)) 
+
+    return total_weight, edges
+
+def main():
+    n = int(input())
+    graph = [list(map(int, input().split())) for _ in range(n)]
+    total_weight, mst_edges = prim(n, graph)
+    if total_weight == -1:
+        print(-1)
+    else:
+        print(total_weight)
+        for u, v in mst_edges:
+            print(u, v)
+
+if __name__ == "__main__":
+    main()
