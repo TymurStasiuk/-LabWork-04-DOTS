@@ -1,0 +1,40 @@
+import math
+import heapq
+
+def read_input():
+    n = int(input())
+    points = [tuple(map(int, input().split())) for _ in range(n)]
+    return n, points
+
+def euclidean(p1, p2):
+    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
+
+def prim(n, points):
+    visited = [False] * n
+    min_edge = [float('inf')] * n
+    min_edge[0] = 0
+    pq = [(0, 0)] 
+    total_weight = 0
+
+    while pq:
+        cost, u = heapq.heappop(pq)
+        if visited[u]:
+            continue
+        visited[u] = True
+        total_weight += cost
+        for v in range(n):
+            if not visited[v]:
+                weight = euclidean(points[u], points[v])
+                if weight < min_edge[v]:
+                    min_edge[v] = weight
+                    heapq.heappush(pq, (weight, v))
+
+    return total_weight
+
+def main():
+    n, points = read_input()
+    result = prim(n, points)
+    print(f"{result:.5f}")
+
+if __name__ == "__main__":
+    main()
