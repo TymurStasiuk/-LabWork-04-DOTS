@@ -1,0 +1,40 @@
+import math
+from collections import deque
+
+def distance(p1, p2):
+    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
+
+def can_reach(points, max_dist):
+    n = len(points)
+    visited = [False] * n
+    queue = deque([0])  # Починаємо з точки 0
+    visited[0] = True
+
+    while queue:
+        curr = queue.popleft()
+        for i in range(n):
+            if not visited[i] and distance(points[curr], points[i]) <= max_dist + 1e-9:
+                visited[i] = True
+                queue.append(i)
+
+    return visited[1]  # чи можна дійти до точки 2 (індекс 1)
+
+def minimal_max_ticket(points):
+    left = 0.0
+    right = 2000.0  
+    eps = 1e-4
+
+    while right - left > eps:
+        mid = (left + right) / 2
+        if can_reach(points, mid):
+            right = mid
+        else:
+            left = mid
+
+    return right
+
+n = int(input())
+points = [tuple(map(int, input().split())) for _ in range(n)]
+
+result = minimal_max_ticket(points)
+print(f"{result:.3f}")
